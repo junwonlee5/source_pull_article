@@ -32,3 +32,51 @@ Run the following command in your terminal or command prompt:
 
 ```bash
 pip install pandas python-docx lxml openpyxl pyinstaller# source_pull_article
+```
+🚀 Step-by-Step Setup & Execution
+
+Option A: Running via Python Script
+Open your terminal or command prompt.
+
+Run the script directly:
+
+```Bash
+python "Source Pull.py"
+```
+A native file selection dialog will appear. Select your .docx file(s).
+
+The script will process the documents and export the generated .xlsx spreadsheet(s) into the same directory as the source file.
+
+Option B: Building a Standalone Executable (.exe / .app)
+Follow these steps to compile a standalone executable that runs without Python installed.
+
+Step 2: Generate the .spec File
+Run the setup script in your terminal:
+
+```Bash
+python setup.py
+```
+Step 3: Build the Application
+Compile the program with PyInstaller using the generated spec file:
+
+```Bash
+python -m PyInstaller source_pull.spec
+```
+Step 4: Locate the Executable
+Once the build process completes, locate your compiled file inside the dist/ directory:
+
+Windows: dist/SourcePullApp.exe
+
+macOS: dist/SourcePullApp
+
+📁 Project File Structure
+Plaintext
+source-pull/
+├── Source Pull.py        # Main Python application
+├── setup.py             # Script to generate source_pull.spec
+├── source_pull.spec     # PyInstaller configuration file
+└── README.md            # Documentation
+⚠️ Notes & Troubleshooting
+Platform Dependencies: PyInstaller builds native executables. Compiling on Windows generates a .exe file; compiling on macOS generates an executable binary for macOS.
+
+Windows Defender / SmartScreen: Because the executable is unsigned, Windows may display a security prompt. Click "More Info" → "Run Anyway" to open it.
