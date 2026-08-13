@@ -70,12 +70,13 @@ Windows: dist/SourcePullApp.exe
 macOS: dist/SourcePullApp
 
 📁 Project File Structure
-Plaintext
+```Plaintext
 source-pull/
 ├── Source Pull.py        # Main Python application
 ├── setup.py             # Script to generate source_pull.spec
 ├── source_pull.spec     # PyInstaller configuration file
 └── README.md            # Documentation
+```
 ⚠️ Notes & Troubleshooting
 Platform Dependencies: PyInstaller builds native executables. Compiling on Windows generates a .exe file; compiling on macOS generates an executable binary for macOS.
 
