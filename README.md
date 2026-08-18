@@ -31,7 +31,7 @@ Ensure you have **Python 3.9+** installed on your system.
 Run the following command in your terminal or command prompt:
 
 ```bash
-pip install pandas python-docx lxml openpyxl pyinstaller# source_pull_article
+pip install pandas python-docx lxml openpyxl pyinstaller
 ```
 🚀 Step-by-Step Setup & Execution
 
