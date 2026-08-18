@@ -9,18 +9,21 @@ from lxml import etree
 
 
 def identify_source_type(text, url):
-    """Categorizes the source with high-priority checks for Law Reviews first,
-
-    followed by Cases, Statutes, and Administrative Regulations.
-    """
     text_clean = text.strip().replace("’", "'").replace("‘", "'")
 
+    # 1. Law Review Pattern
     law_review_pattern = r"\d+\s+[A-Z][A-Za-z\.\s\&\'']+\s+(?:L\.\s+Rev\.|J\.|L\.\s+&|Rev\.|Notre\s+Dame\s+L\.\s+Rev\.)(?:\s+[A-Za-z]+)?\s+\d+"
     is_law_review = re.search(law_review_pattern, text_clean)
 
+    # 2. Case Markers & Reporter Patterns
     is_case_marker = re.search(r"\s+[vV]\.\s+", text_clean)
-    has_reporter = re.search(r"\d+\s+[A-Z][\w\.\d\s\']+\s+\d+", text_clean)
+    # Matches patterns like: 597 U.S. 1, 123 F.3d 456, 45 Me. 12, etc.
+    reporter_pattern = (
+        r"\b\d+\s+[A-Z][A-Za-z0-9\.\s\’\']{1,15}\s+\d+(?:,\s*\d+)?\b"
+    )
+    has_reporter = re.search(reporter_pattern, text_clean)
 
+    # 3. Statute / Regulation Keywords
     statute_keywords = [
         "U.S.C.",
         "§",
@@ -35,20 +38,26 @@ def identify_source_type(text, url):
     has_statute_keyword = any(m in text_clean for m in statute_keywords)
     admin_code_pattern = r"\b(?:\d+\s+)?[A-Z][A-Za-z\.\s]*\bADC\b"
     is_admin_code = re.search(admin_code_pattern, text_clean)
-
     is_statute_or_reg = has_statute_keyword or bool(is_admin_code)
+
     is_report = any(
         m in text_clean.lower() for m in ["dep't", "dept", "report", "review"]
     )
 
+    # Priority Order
     if is_law_review:
         return "Law Review Article"
+    elif is_statute_or_reg:
+        return "Statute/Regulation"
+    # FIXED: Catches cases with 'v.' OR citations that start directly with reporter/volume details
     elif (is_case_marker and has_reporter) or (
         is_case_marker and "v." in text_clean.lower()
     ):
         return "Case"
-    elif is_statute_or_reg:
-        return "Statute/Regulation"
+    elif (
+        has_reporter and not is_statute_or_reg and not is_report
+    ):  # Catches "597 U.S. 1, 26–27 (2022)"
+        return "Case"
     elif url:
         return "Internet Article"
     elif is_report:
